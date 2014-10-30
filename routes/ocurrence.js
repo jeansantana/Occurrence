@@ -20,6 +20,7 @@ module.exports = function(app) {
     console.log("GET - /ocurrences");
     return Ocurrence.find(function(err, ocurrences) {
       if(!err) {
+
         return res.send(ocurrences);
       } else {
         res.statusCode = 500;
@@ -67,13 +68,15 @@ module.exports = function(app) {
    */
   addOcurrence = function(req, res) {
 
-    console.log('POST - /tshirt');
+    console.log('POST - /ocurrence');
 
     var ocurrence = new Ocurrence({
       type_crime:    req.body.type_crime,
       date_crime:    req.body.date_crime,
       hour_crime :   req.body.hour_crime,
-      title_crime:   req.body.title_crime
+      title_crime:   req.body.title_crime,
+      location_crime: req.body.location_crime,
+      description_crime: req.body.description_crime
     });
 
     ocurrence.save(function(err) {
@@ -110,15 +113,13 @@ module.exports = function(app) {
       if(!ocurrence) {
         res.statusCode = 404;
         return res.send({ error: 'Not found' });
-      }
-
-     
-     
-      
+      }      
 	  
       if (req.body.type_crime != null) ocurrence.type_crime = req.body.type_crime;
       if (req.body.date_crime != null) ocurrence.date_crime = req.body.date_crime;
       if (req.body.hour_crime  != null) ocurrence.hour_crime = req.body.hour_crime ;
+      if (req.body.description_crime  != null) ocurrence.description_crime = req.body.description_crime;
+      if (req.body.location_crime  != null) ocurrence.location_crime = req.body.location_crime ;
       if (req.body.size != null) ocurrence.size  = req.body.size;
       if (req.body.title_crime != null) ocurrence.title_crime = req.body.title_crime;
 

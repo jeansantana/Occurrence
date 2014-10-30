@@ -26,7 +26,15 @@ var Ocurrence = new Schema({
   },
   title_crime:   {
     type: String,
-	require : true
+	  require : true
+  },
+  location_crime: {
+    type: String,
+    require : true
+  },
+  description_crime: {
+    type: String,
+    require : true
   },
   modified: {
     type    : Date,
