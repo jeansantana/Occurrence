@@ -10,40 +10,40 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 
-var Ocurrence = new Schema({
+var Occurrence = new Schema({
 
-  type_crime:    {
+  title:    {
     type    : String,
     require : true
   },
-  date_crime:    {
+  location:    {
     type    : String,
     require : true
   },
-  hour_crime:     {
+  date:     {
     type    : String,
     require : true
   },
-  title_crime:   {
+  hour:   {
     type: String,
 	  require : true
   },
-  location_crime: {
+  crimeType: {
     type: String,
     require : true
   },
-  description_crime: {
+  description: {
     type: String,
     require : true
-  },
-  modified: {
+  }
+  /*modified: {
     type    : Date,
     default : Date.now
-  }
+  }*/
 });
 
 /*Tshirt.path('model').validate(function (v) {
   return ((v != "") && (v != null));
 });*/
 
-module.exports = mongoose.model('Ocurrence', Ocurrence);
+module.exports = mongoose.model('Occurrence', Occurrence);

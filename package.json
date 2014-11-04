@@ -1,6 +1,6 @@
 {
   "name": "simple-express-crud",
-  "version": "0.0.1",
+  "version": "0.0.1-1",
   "author": "Emerson, Isaac Newton, Jean Silva",
   "description": "Simple CRUD with Node.js, MongoDB, Mongoose and Express Framework",
   "scripts": {
@@ -18,5 +18,9 @@
   "repository": {
     "type": "git",
     "url": ""
+  },
+  "subdomain": "jeangsilva-occurrences_api",
+  "engines": {
+    "node": "0.10.x"
   }
 }

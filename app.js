@@ -18,15 +18,15 @@ app.use(bodyParser());
 app.use(methodOverride());
 
 //Add the routes
-routes = require('./routes/ocurrence')(app);
+routes = require('./routes/occurrence')(app);
 
 // MongoDB configuration
-mongoose.connect('mongodb://localhost/ocurrence', function(err, res) {
-  if(err) {
-    console.log('error connecting to MongoDB Database. ' + err);
-  } else {
-    console.log('Connected to Database');
-  }
+mongoose.connect('mongodb://localhost/occurrence', function(err, res) {
+    if(err) {
+        console.log('error connecting to MongoDB Database. ' + err);
+    } else {
+        console.log('Connected to Database');
+    }
 });
 
 app.listen(8080);
@@ -34,5 +34,5 @@ console.log('Im listening on port 8080');
 
 // First example router
 app.get('/', function(req, res) {
-  res.send("Hello world!");
+    res.send("Welcome to Occurrence API!");
 });
