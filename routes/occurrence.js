@@ -3,7 +3,7 @@
  *
  * @module      :: Routes
  * @description :: Maps routes and actions
- * @author        :: Isaac Newton
+ * @author        :: Jean, Isaac, Emerson
  */
 
 var Occurrence = require('../models/occurrence.js');
@@ -20,7 +20,31 @@ module.exports = function(app) {
         console.log("GET - /occurrences");
         return Occurrence.find(function(err, occurrences) {
             if(!err) {
-                return res.send(occurrences);
+                var occs = [];
+                
+				for(var i = 0; i < occurrences.length; ++i) {
+                    var loc = new Object({
+                        street:  occurrences[i].location.street,
+                        city: occurrences[i].location.city,
+                        neighborhood:  occurrences[i].location.neighborhood,
+                        state:  occurrences[i].location.state,
+                        latitude:  occurrences[i].location.latitude,
+                        longitude:  occurrences[i].location.longitude
+                    });
+                    
+                    var occur = new Occurrence({
+                        _id         : occurrences[i]._id,
+                        title       : occurrences[i].title,
+                        location    : loc,
+                        date        : occurrences[i].date,
+                        hour        : occurrences[i].hour,
+                        crimeType   : occurrences[i].crimeType,
+                        description : occurrences[i].description
+                    });
+                    occs.push(occur);
+				}
+				return res.send(occs);
+                //return res.send(occurrences);
             } else {
                 res.statusCode = 500;
                 console.log('Internal error(%d): %s',res.statusCode,err.message);
@@ -28,7 +52,6 @@ module.exports = function(app) {
             }
         });
     };
-
 
 
     /**
@@ -48,6 +71,7 @@ module.exports = function(app) {
 
             if(!err) {
                 var occur = new Occurrence({
+                    _id         : occurrence._id,
                     title       : occurrence.title,
                     location    : occurrence.location,
                     date        : occurrence.date,
@@ -63,8 +87,90 @@ module.exports = function(app) {
             }
         });
     };
+    
 
 
+	findByCrimeType = function(req, res) {
+		console.log("GET - /Teste");
+		return Occurrence.find({'crimeType': req.params.crimeType}, function(err, results)  {
+			if(!err) {
+				return res.send(results);
+			} else {
+				res.statusCode = 500;
+				console.log('Internal error(%d): %s',res.statusCode,err.message);
+				return res.send({ error: 'Server error' });
+			}
+		})   ;
+	};
+	
+	findByLocation = function(req, res) {
+		var locationType = req.params.locationType;
+		var nome = req.params.nome;
+		
+		return Occurrence.find( function(err, results)  {
+			if(!err) {
+				var resp = [];
+				for(var i = 0; i < results.length; ++i){
+					if(results[i]['location'] && results[i]['location'][locationType] == nome){
+						resp.push(results[i]);
+					}
+				}
+			
+				return res.send(resp);
+			} else {
+				res.statusCode = 500;
+				console.log('Internal error(%d): %s',res.statusCode,err.message);
+				return res.send({ error: 'Server error' });
+			}
+		});
+	};
+	findByYMD = function(req, res) {
+		
+		return Occurrence.find( function(err, results)  {
+			if(!err) {
+				var resp = [];
+				for(var i = 0; i < results.length; ++i){
+					var today, someday;
+					if(results[i]['date']){
+					//(year, month, day, hours, minutes, seconds, milliseconds)
+					today = new Date(req.params.year, req.params.month-1, req.params.day);
+					someday = new Date(results[i].date.getFullYear(), results[i].date.getMonth(), results[i].date.getDate());
+					//console.log("Param: "+ today.getFullYear() + "\\"+today.getMonth()+"\\"+today.getDate());
+					//console.log("Banco: " +someday.getFullYear() + "\\"+someday.getMonth()+"\\"+someday.getDate());
+					//console.log("\n\n");
+						if(someday >= today){
+							resp.push(results[i]);
+						}
+					}
+				}
+				return res.send(resp);
+			} else {
+				res.statusCode = 500;
+				console.log('Internal error(%d): %s',res.statusCode,err.message);
+				return res.send({ error: 'Server error' });
+			}
+		});
+	};
+	
+	
+	
+	/*findByLocationCidade = function(req, res) {
+		
+		
+		console.log("GET - /Location");
+		return Occurrence.find({'location': req.params.location.cidade}, function(err, results)  {
+			if(!err) {
+				return res.send(results);
+			} else {
+				res.statusCode = 500;
+				console.log('Internal error(%d): %s',res.statusCode,err.message);
+				return res.send({ error: 'Server error' });
+			}
+		});
+	};*/
+	
+	
+	
 
 
     /**
@@ -75,14 +181,16 @@ module.exports = function(app) {
     addOccurrence = function(req, res) {
 
         console.log('POST - /occurrence');
-
+		//req.body.date = new Date(1990,10,12);
         var occurrence = new Occurrence({
             title       : req.body.title,
             location    : req.body.location,
+
             date        : req.body.date,
             hour        : req.body.hour,
             crimeType   : req.body.crimeType,
-            description : req.body.description
+            description : req.body.description,
+         
         });
 
         occurrence.save(function(err) {
@@ -96,13 +204,15 @@ module.exports = function(app) {
             } else {
 
                 console.log('Occurrence created');
-                return res.send({ status: 'OK', occurrence:occurrence });
+                return res.send(occurrence);
 
             }
 
         });
 
     };
+    
+    
 
     /**
    * Atualiza uma ocorrencia pelo ID
@@ -183,6 +293,8 @@ module.exports = function(app) {
             })
         });
     }
+    
+ 
 
     //Link routes and actions
     app.get('/occurrence', findAllOccurrence);
@@ -190,5 +302,8 @@ module.exports = function(app) {
     app.post('/occurrence', addOccurrence);
     app.put('/occurrence/:id', updateOccurrence);
     app.delete('/occurrence/:id', deleteOccurrence);
+    app.get('/occurrence/type/:crimeType', findByCrimeType);
+    app.get('/occurrence/location/:locationType/:nome', findByLocation);
+    app.get('/occurrence/date/:year/:month/:day', findByYMD);
 
 }

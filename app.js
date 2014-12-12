@@ -1,6 +1,6 @@
 /*
  * Main App file App.js
- * @author Isaac Newton
+ * @author Jean, Isaac, Emerson
  */
 
 
@@ -30,7 +30,7 @@ mongoose.connect('mongodb://localhost/occurrence', function(err, res) {
 });
 
 app.listen(8080);
-console.log('Im listening on port 8080');
+console.log('Im listening on port (8080)');
 
 // First example router
 app.get('/', function(req, res) {

@@ -3,12 +3,20 @@
  *
  * @module      :: Model
  * @description :: Represent data model for the Ocurrence
- * @author        :: Isaac
+ * @author        :: Jean, Isaac, Emerson
  */
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var Location = {
+  street:  String,
+  city: String,
+  neighborhood:  String,
+  state:  String,
+  latitude:  String,
+  longitude:  String
+};
 
 var Occurrence = new Schema({
 
@@ -17,11 +25,11 @@ var Occurrence = new Schema({
     require : true
   },
   location:    {
-    type    : String,
+    type    : Object,
     require : true
   },
   date:     {
-    type    : String,
+    type    : Date,
     require : true
   },
   hour:   {
@@ -36,7 +44,8 @@ var Occurrence = new Schema({
     type: String,
     require : true
   }
-  /*modified: {
+  
+ /* modified: {
     type    : Date,
     default : Date.now
   }*/
